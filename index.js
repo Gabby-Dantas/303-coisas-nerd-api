@@ -1,17 +1,21 @@
 const express = require('express');
 const cors = require('cors');
-const personagensAnime = require('./dados/anime.json');
-const personagensCartoon = require('./dados/cartoon.json');
+const expressMongoDb = require('express-mongo-db');
 
 const app = express();
 app.use(cors());
+app.use(expressMongoDb('mongodb://localhost/coisas-nerd'));
 
 app.get('/anime', function(req, res){
-    res.send(personagensAnime);
+    req.db.collection('anime').find().toArray(function(erro, dados){
+        res.send(dados);
+    });
 });
 
 app.get('/cartoon', function(req, res){
-    res.send(personagensCartoon);
+    req.db.collection('cartoon').find().toArray(function(erro, dados){
+        res.send(dados);
+    });
 });
 
 app.listen(3000, function(){
